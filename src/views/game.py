@@ -70,6 +70,8 @@ class Game(arcade.View):
             collision_type="box",
         )
         self.boxes_sprite_list.append(sprite)
+        self.score += 10
+        self.score_text.text = f"Score: {self.score}"
 
     def start_timer(self, delta_time):
         self.total_game_time += delta_time
@@ -80,13 +82,14 @@ class Game(arcade.View):
         elif self.total_game_time > config.LIGHTS_OUT and self.player_light not in self.light_layer:
             self.light_layer.add(self.player_light)
 
+        if int(self.total_game_time) % 2 != 0:
+            return
         if self.wall_bulb_left in self.light_layer:
             self.light_layer.remove(self.wall_bulb_left)
             self.light_layer.remove(self.wall_bulb_right)
         else:
             self.light_layer.add(self.wall_bulb_left)
             self.light_layer.add(self.wall_bulb_right)
-
 
     def game_over(self, _delta_time):
         self.window.show_view(Aftermath(self.score, False))
