@@ -28,6 +28,8 @@ class Player:
 
     health: int = 100
 
+    light_radius: int = 100
+
 
 # Close enough to not-moving to have the animation go to idle.
 DEAD_ZONE = 0.1
@@ -47,6 +49,8 @@ SCREEN_HEIGHT = 600
 WALL_LEFT = SCREEN_WIDTH / 2 - (BOX_ROW_COUNT * BOX_SIZE) / 2
 WALL_RIGHT = SCREEN_WIDTH / 2 + (BOX_ROW_COUNT * BOX_SIZE) / 2
 
+WALL_BULB_RADIUS = (WALL_RIGHT - WALL_LEFT) / 2
+
 # Space in the box row for ease.
 FREE_SPACE = 3
 
@@ -54,6 +58,9 @@ GAME_END_TIME = 200
 
 DEBUG = False
 PERFORMANCE = False
+
+# time after which the lights go out.
+LIGHTS_OUT = 5
 
 BOX_PATH = Path(__file__).parent.parent.resolve() / "assets/Box/"
 

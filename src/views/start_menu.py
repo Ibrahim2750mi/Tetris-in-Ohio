@@ -7,6 +7,7 @@ from views import Game
 class StartMenu(arcade.View):
     def __init__(self):
         super().__init__()
+        arcade.set_background_color(arcade.color.STORMCLOUD)
 
         self.manager = arcade.gui.UIManager()
         self.anchor = self.manager.add(arcade.gui.UIAnchorLayout())

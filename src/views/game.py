@@ -2,6 +2,7 @@ import random
 
 import arcade
 import pymunk
+from arcade.experimental.lights import Light, LightLayer
 
 import config
 from sprites import Box, PlayerCharacter
@@ -31,6 +32,10 @@ class Game(arcade.View):
         # Separate variable that holds the player sprite
         self.player_sprite: PlayerCharacter = None
         self.player_sprite_list: arcade.SpriteList = None
+        self.player_light: Light = None
+
+        self.wall_bulb_left: Light = None
+        self.wall_bulb_right: Light = None
 
         self.platform_sprite_list: arcade.SpriteList = None
 
@@ -41,6 +46,8 @@ class Game(arcade.View):
 
         self.box_center_y_list = None
         self.box_center_x_list = None
+
+        self.light_layer: LightLayer = None
 
         arcade.schedule(self.add_box, interval=5)
 
@@ -70,6 +77,16 @@ class Game(arcade.View):
 
         if int(config.GAME_END_TIME - self.total_game_time) < 0:
             self.window.show_view(Aftermath(self.score, True))
+        elif self.total_game_time > config.LIGHTS_OUT and self.player_light not in self.light_layer:
+            self.light_layer.add(self.player_light)
+
+        if self.wall_bulb_left in self.light_layer:
+            self.light_layer.remove(self.wall_bulb_left)
+            self.light_layer.remove(self.wall_bulb_right)
+        else:
+            self.light_layer.add(self.wall_bulb_left)
+            self.light_layer.add(self.wall_bulb_right)
+
 
     def game_over(self, _delta_time):
         self.window.show_view(Aftermath(self.score, False))
@@ -179,6 +196,16 @@ class Game(arcade.View):
             start_y=config.SCREEN_HEIGHT - 30,
         )
 
+        self.light_layer = LightLayer(config.SCREEN_WIDTH, config.SCREEN_HEIGHT)
+        # We can also set the background color that will be lit by lights,
+        # but in this instance we just want a black background
+        self.light_layer.set_background_color(arcade.color.BLACK)
+
+        self.player_light = Light(0, 0, config.Player.light_radius, arcade.csscolor.WHITE, "soft")
+        y = self.box_center_y_list[-1]
+        self.wall_bulb_left = Light(config.WALL_LEFT, y, config.WALL_BULB_RADIUS, arcade.csscolor.WHITE, "soft")
+        self.wall_bulb_right = Light(config.WALL_RIGHT, y, config.WALL_BULB_RADIUS, arcade.csscolor.WHITE, "soft")
+
         if not config.DEBUG:
             return
 
@@ -198,9 +225,20 @@ class Game(arcade.View):
 
     def on_draw(self):
         self.clear()
-        self.player_sprite_list.draw()
-        self.boxes_sprite_list.draw()
-        self.platform_sprite_list.draw()
+
+        if self.total_game_time > config.LIGHTS_OUT:
+            with self.light_layer:
+                self.player_sprite_list.draw()
+                self.boxes_sprite_list.draw()
+                self.platform_sprite_list.draw()
+            # Draw the light layer to the screen.
+            # This fills the entire screen with the lit version
+            # of what we drew into the light layer above.
+            self.light_layer.draw(ambient_color=(3, 3, 3))
+        else:
+            self.player_sprite_list.draw()
+            self.boxes_sprite_list.draw()
+            self.platform_sprite_list.draw()
 
         self.score_text.draw()
         self.health_text.draw()
@@ -280,6 +318,9 @@ class Game(arcade.View):
     def on_update(self, delta_time: float):
         self.process_keychange()
         self.physics_engine.step(1 / 60.0)
+
+        self.player_light.position = self.player_sprite.position
+
         if self.player_sprite.dead and not self.funeral:
             self.player_sprite.texture = \
                 self.player_sprite.death_textures[9][self.player_sprite.character_face_direction]
