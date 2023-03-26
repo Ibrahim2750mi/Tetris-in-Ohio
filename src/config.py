@@ -18,13 +18,15 @@ class Player:
     asset_path = Path(__file__).parent.parent.resolve() / "assets/Player/"
 
     # Constants used to track if the player is facing left or right
-    right_facing = 0
-    left_facing = 1
+    right_facing: int = 0
+    left_facing: int = 1
 
     # How many pixels to move before we change the texture in the walking animation
-    distance_to_change_texture = 10
+    distance_to_change_texture: int = 10
 
-    scaling = 1
+    scaling: int = 1
+
+    health: int = 100
 
 
 # Close enough to not-moving to have the animation go to idle.
@@ -48,10 +50,17 @@ WALL_RIGHT = SCREEN_WIDTH / 2 + (BOX_ROW_COUNT * BOX_SIZE) / 2
 # Space in the box row for ease.
 FREE_SPACE = 3
 
+GAME_END_TIME = 200
+
 DEBUG = False
+PERFORMANCE = False
 
 BOX_PATH = Path(__file__).parent.parent.resolve() / "assets/Box/"
 
 if len(sys.argv) > 1:
     if sys.argv[1].lower() == "true":
         DEBUG = True
+
+if len(sys.argv) > 2:
+    if sys.argv[2].lower() == "true":
+        PERFORMANCE = True

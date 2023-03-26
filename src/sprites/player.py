@@ -29,7 +29,7 @@ class PlayerCharacter(arcade.Sprite):
         self.pushing = False
         self.can_push = False
         self.crushed = False
-        self.health = 100
+        self.health = Player.health
         self.dead = False
 
         # --- Load Textures ---
