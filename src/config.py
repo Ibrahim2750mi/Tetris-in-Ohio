@@ -41,6 +41,8 @@ GROUND_FRICTION = 0.5
 BOX_SIZE = 32
 # Number of boxes required in a row to score.
 BOX_ROW_COUNT = 7
+# The height from which the box is dropped.
+BOX_DROP_HEIGHT = 500
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
@@ -68,18 +70,24 @@ ASSET_PATH = Path(__file__).parent.parent.resolve() / "assets/"
 # Must be greater than 1.
 LIGHT_FLICKING_TIME_PERIOD = 2
 
+# Time after which the player can reset again.
+RESET_COOLDOWN = 20
+
 STORY = \
     f"""
-Your school bully Baba, mod-d 5 tetris for you to play. But there was something suspicious about it. Looking at your gestures he said don't be scared Mallo(your name) this is mod-d 5. So you and your friend Pols Agi decided to play the game, little did you know it was a trap and your friend Pols got sucked into the computer screen and now is stuck inside the game.
+Your school bully Baba, mod-d 5 tetris for you to play. But there was something suspicious about it. Looking at your gestures he said don't be scared Mallo(your name) this is mod-d 5 tetris as I have removed the annoying L-block. Baited by the removal of annoying L-block, you and your friend Pols Agi decided to play the game, little did you know it was a trap and your friend Pols got sucked into the computer screen and now is stuck inside the game.
 
 You currently control him with(A for left, D for right and W for jump). The game's main goal is to survive {GAME_END_TIME} seconds. You will get some extra bonus if you arrange the boxes in a straight line like tetris.
     """
 
 POPCULTURE_REFERENCE = \
     f"""
-Popculture references:
+Pop culture references:
 + The "in Ohio" suffix in the game's name is in context with the meme Only in Ohio.
 + Baba, mod-d 5, Mallo and Pols Agi is in context with the Indian meme Pols Agi.
+
+Ways to combat glitches:
++ Sometimes the player gets stuck between two boxes and is unable to move. Simply press R to reset, the R key has a cooldown of {RESET_COOLDOWN}.
     """
 
 if len(sys.argv) > 1:

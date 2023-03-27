@@ -18,10 +18,10 @@ class Aftermath(arcade.View):
 
         self.v_box = arcade.gui.UIBoxLayout(space_between=20)
 
-        win_loose_message = "You win!\nCongrats for escaping!!"
+        win_loose_message = "You win!\nCongrats for helping your friend Pols escape!!"
         if not self.win:
             arcade.set_background_color(arcade.color.EERIE_BLACK)
-            win_loose_message = "You lose\nYOU ARE NOW TRAPPED"
+            win_loose_message = "You lose\nPOLS IS NOW TRAPPED"
 
         win_loose_text = arcade.gui.UILabel(text=win_loose_message, multiline=True, width=250, align="center")
 

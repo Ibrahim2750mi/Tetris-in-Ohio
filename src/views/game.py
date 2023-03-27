@@ -30,6 +30,7 @@ class Game(arcade.View):
         self.timer_text: arcade.Text = None
 
         self.total_game_time: int = 0
+        self.reset_cooldown: int = 0
 
         # Separate variable that holds the player sprite
         self.player_sprite: PlayerCharacter = None
@@ -71,7 +72,7 @@ class Game(arcade.View):
             return
         sprite = Box(f"{config.BOX_PATH}/boxCrate_{random.randrange(0, 3)}.png")
         sprite.center_x = random.randrange(int(config.WALL_LEFT), int(config.WALL_RIGHT))
-        sprite.center_y = 500
+        sprite.center_y = config.BOX_DROP_HEIGHT
         self.physics_engine.add_sprite(
             sprite,
             mass=1.0,
@@ -88,6 +89,8 @@ class Game(arcade.View):
     def start_timer(self, delta_time):
         self.total_game_time += delta_time
         self.timer_text.text = f"Time left to survive: {int(config.GAME_END_TIME - self.total_game_time)}"
+
+        self.reset_cooldown -= delta_time
 
         if int(config.GAME_END_TIME - self.total_game_time) < 0:
             self.window.show_view(Aftermath(self.score, True))
@@ -116,6 +119,7 @@ class Game(arcade.View):
     def setup(self, _delta_time=config.DEAD_ZONE):
         self.funeral = False
         self.total_game_time = 0
+        self.reset_cooldown: int = 0
         arcade.schedule(self.start_timer, interval=1)
 
         self.physics_engine = arcade.PymunkPhysicsEngine(gravity=(0.0, -900.0), damping=1)
@@ -324,6 +328,14 @@ class Game(arcade.View):
             self.right_pressed = True
         elif key == arcade.key.P:
             self.player_sprite.pushing = not self.player_sprite.pushing
+        elif key == arcade.key.R:
+            if self.reset_cooldown <= 0:
+                self.reset_cooldown += config.RESET_COOLDOWN
+                self.physics_engine.set_position(self.player_sprite, (
+                    config.WALL_LEFT + (config.WALL_RIGHT - config.WALL_LEFT) / 2,
+                    config.BOX_DROP_HEIGHT - config.BOX_SIZE / 2,
+                    ),
+                )
 
     def on_key_release(self, key, modifiers):
         """Called when the user releases a key."""
@@ -357,7 +369,10 @@ class Game(arcade.View):
 
             arcade.unschedule(self.start_timer)
             arcade.schedule_once(self.game_over, 5)
-            arcade.stop_sound(self.bg_player)
+            player = self.start_bg_player
+            if self.bg_player:
+                player = self.bg_player
+            arcade.stop_sound(player)
             self.dies_irae_player = arcade.play_sound(self.dies_irae_sound, looping=True)
 
         if self.funeral:
