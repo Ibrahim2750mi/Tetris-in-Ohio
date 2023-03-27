@@ -26,7 +26,7 @@ class Player:
 
     scaling: int = 1
 
-    health: int = 10
+    health: int = 100
 
     light_radius: int = 100
 
@@ -60,7 +60,7 @@ DEBUG = False
 PERFORMANCE = False
 
 # time after which the lights go out.
-LIGHTS_OUT = 5
+LIGHTS_OUT = 50
 
 BOX_PATH = Path(__file__).parent.parent.resolve() / "assets/Box/"
 ASSET_PATH = Path(__file__).parent.parent.resolve() / "assets/"
