@@ -26,7 +26,7 @@ class Player:
 
     scaling: int = 1
 
-    health: int = 100
+    health: int = 10
 
     light_radius: int = 100
 
@@ -63,6 +63,10 @@ PERFORMANCE = False
 LIGHTS_OUT = 5
 
 BOX_PATH = Path(__file__).parent.parent.resolve() / "assets/Box/"
+ASSET_PATH = Path(__file__).parent.parent.resolve() / "assets/"
+
+# Must be greater than 1.
+LIGHT_FLICKING_TIME_PERIOD = 2
 
 if len(sys.argv) > 1:
     if sys.argv[1].lower() == "true":

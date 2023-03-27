@@ -10,9 +10,11 @@ from views import Aftermath
 
 
 class Game(arcade.View):
-    def __init__(self):
+    def __init__(self, start_bg_player):
         super().__init__()
         arcade.set_background_color(arcade.color.STORMCLOUD)
+
+        self.start_bg_player = start_bg_player
 
         # Track the current state of what key is pressed
         self.left_pressed = False
@@ -49,6 +51,15 @@ class Game(arcade.View):
 
         self.light_layer: LightLayer = None
 
+        self.switch_on_sound = arcade.load_sound(config.ASSET_PATH / "switch_on.wav")
+        self.switch_off_sound = arcade.load_sound(config.ASSET_PATH / "switch_off.wav")
+
+        self.dies_irae_sound = arcade.load_sound(config.ASSET_PATH / "dies_irae_f2.wav")
+        self.dies_irae_player = None
+
+        self.bg_music = arcade.load_sound(config.ASSET_PATH / r"01.A-Creepy-Intro.ogg", streaming=True)
+        self.bg_player = None
+
         arcade.schedule(self.add_box, interval=5)
 
         # debug section
@@ -70,8 +81,9 @@ class Game(arcade.View):
             collision_type="box",
         )
         self.boxes_sprite_list.append(sprite)
-        self.score += 10
-        self.score_text.text = f"Score: {self.score}"
+        if not self.player_sprite.dead:
+            self.score += 10
+            self.score_text.text = f"Score: {self.score}"
 
     def start_timer(self, delta_time):
         self.total_game_time += delta_time
@@ -79,20 +91,26 @@ class Game(arcade.View):
 
         if int(config.GAME_END_TIME - self.total_game_time) < 0:
             self.window.show_view(Aftermath(self.score, True))
-        elif self.total_game_time > config.LIGHTS_OUT and self.player_light not in self.light_layer:
-            self.light_layer.add(self.player_light)
+        elif self.total_game_time > config.LIGHTS_OUT:
+            if self.player_light not in self.light_layer:
+                self.light_layer.add(self.player_light)
 
-        if int(self.total_game_time) % 2 != 0:
-            return
-        if self.wall_bulb_left in self.light_layer:
-            self.light_layer.remove(self.wall_bulb_left)
-            self.light_layer.remove(self.wall_bulb_right)
-        else:
-            self.light_layer.add(self.wall_bulb_left)
-            self.light_layer.add(self.wall_bulb_right)
+                arcade.stop_sound(self.start_bg_player)
+                self.bg_player = arcade.play_sound(self.bg_music, looping=True)
+
+            if int(self.total_game_time) % config.LIGHT_FLICKING_TIME_PERIOD != 0:
+                return
+            if self.wall_bulb_left in self.light_layer:
+                arcade.play_sound(self.switch_off_sound)
+                self.light_layer.remove(self.wall_bulb_left)
+                self.light_layer.remove(self.wall_bulb_right)
+            else:
+                arcade.play_sound(self.switch_on_sound)
+                self.light_layer.add(self.wall_bulb_left)
+                self.light_layer.add(self.wall_bulb_right)
 
     def game_over(self, _delta_time):
-        self.window.show_view(Aftermath(self.score, False))
+        self.window.show_view(Aftermath(self.score, False, self.dies_irae_player))
 
     def setup(self, _delta_time=config.DEAD_ZONE):
         self.funeral = False
@@ -332,6 +350,8 @@ class Game(arcade.View):
             self.funeral = True
             arcade.unschedule(self.start_timer)
             arcade.schedule_once(self.game_over, 5)
+            arcade.stop_sound(self.bg_player)
+            self.dies_irae_player = arcade.play_sound(self.dies_irae_sound, looping=True)
 
         if self.funeral:
             self.add_box(delta_time)

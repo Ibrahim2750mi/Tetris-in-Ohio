@@ -1,9 +1,11 @@
 import arcade
 import arcade.gui
 
+import config
+
 
 class Aftermath(arcade.View):
-    def __init__(self, score, win):
+    def __init__(self, score, win, dies_irae_player=None):
         super().__init__()
 
         self.manager = arcade.gui.UIManager()
@@ -25,7 +27,10 @@ class Aftermath(arcade.View):
         @play_again_button.event("on_click")
         def on_click_play_again_button(_event):
             from views import Game
-            self.window.show_view(Game())
+            if dies_irae_player:
+                arcade.stop_sound(dies_irae_player)
+            self.start_bg_player = arcade.play_sound(self.start_bg_music)
+            self.window.show_view(Game(self.start_bg_player))
 
         self.v_box.add(win_loose_text)
         self.v_box.add(play_again_button)
@@ -36,6 +41,9 @@ class Aftermath(arcade.View):
             anchor_x="center_x",
             anchor_y="center_y",
         )
+
+        self.start_bg_music = arcade.load_sound(config.ASSET_PATH / "02.A-Creepyscape.ogg", streaming=False)
+        self.start_bg_player = None
 
     def on_show_view(self):
         self.manager.enable()

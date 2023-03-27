@@ -1,6 +1,7 @@
 import arcade
 import arcade.gui
 
+import config
 from views import Game
 
 
@@ -18,7 +19,7 @@ class StartMenu(arcade.View):
 
         @start_button.event("on_click")
         def on_click_start_button(_event):
-            self.window.show_view(Game())
+            self.window.show_view(Game(self.start_bg_player))
 
         exit_button = arcade.gui.UIFlatButton(text="Exit", width=250)
 
@@ -35,8 +36,12 @@ class StartMenu(arcade.View):
             anchor_y="center_y",
         )
 
+        self.start_bg_music = arcade.load_sound(config.ASSET_PATH / "02.A-Creepyscape.ogg", streaming=False)
+        self.start_bg_player = None
+
     def on_show_view(self):
         self.manager.enable()
+        self.start_bg_player = arcade.play_sound(self.start_bg_music)
 
     def on_hide_view(self):
         self.manager.disable()
