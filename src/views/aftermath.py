@@ -69,15 +69,16 @@ class Aftermath(arcade.View):
     def on_draw(self):
         self.clear()
 
-        with self.window.ctx.pyglet_rendering():
-            self.window.ctx.disable(self.window.ctx.BLEND)
-            video_texture = self.player.texture
-            if video_texture:
-                video_texture.blit(
-                    0,
-                    0,
-                    width=self.window.width,
-                    height=self.window.height,
-                )
+        if not self.win:
+            with self.window.ctx.pyglet_rendering():
+                self.window.ctx.disable(self.window.ctx.BLEND)
+                video_texture = self.player.texture
+                if video_texture:
+                    video_texture.blit(
+                        0,
+                        0,
+                        width=self.window.width,
+                        height=self.window.height,
+                    )
 
         self.manager.draw()

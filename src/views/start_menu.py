@@ -21,6 +21,29 @@ class StartMenu(arcade.View):
         def on_click_start_button(_event):
             self.window.show_view(Game(self.start_bg_player))
 
+        story_button = arcade.gui.UIFlatButton(text="Story?", width=250)
+        story_box = arcade.gui.UIMessageBox(
+            message_text=config.STORY,
+            width=500,
+            height=350,
+            buttons=("Pop culture", "Back"),
+        )
+        pop_culture_box = arcade.gui.UIMessageBox(
+            message_text=config.POPCULTURE_REFERENCE,
+            width=500,
+            height=350,
+            buttons=("Back", ),
+        )
+
+        @story_button.event("on_click")
+        def on_click_story_button(_event):
+            self.manager.add(story_box)
+
+        @story_box.event("on_action")
+        def on_click_story_box_buttons(event: arcade.gui.UIOnActionEvent):
+            if event.action == "Pop culture":
+                self.manager.add(pop_culture_box)
+
         exit_button = arcade.gui.UIFlatButton(text="Exit", width=250)
 
         @exit_button.event("on_click")
@@ -28,6 +51,7 @@ class StartMenu(arcade.View):
             arcade.exit()
 
         self.v_box.add(start_button)
+        self.v_box.add(story_button)
         self.v_box.add(exit_button)
 
         self.anchor.add(

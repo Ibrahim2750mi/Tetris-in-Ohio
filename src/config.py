@@ -54,7 +54,7 @@ WALL_BULB_RADIUS = (WALL_RIGHT - WALL_LEFT) / 2
 # Space in the box row for ease.
 FREE_SPACE = 3
 
-GAME_END_TIME = 200
+GAME_END_TIME = 150
 
 DEBUG = False
 PERFORMANCE = False
@@ -67,6 +67,20 @@ ASSET_PATH = Path(__file__).parent.parent.resolve() / "assets/"
 
 # Must be greater than 1.
 LIGHT_FLICKING_TIME_PERIOD = 2
+
+STORY = \
+    f"""
+Your school bully Baba, mod-d 5 tetris for you to play. But there was something suspicious about it. Looking at your gestures he said don't be scared Mallo(your name) this is mod-d 5. So you and your friend Pols Agi decided to play the game, little did you know it was a trap and your friend Pols got sucked into the computer screen and now is stuck inside the game.
+
+You currently control him with(A for left, D for right and W for jump). The game's main goal is to survive {GAME_END_TIME} seconds. You will get some extra bonus if you arrange the boxes in a straight line like tetris.
+    """
+
+POPCULTURE_REFERENCE = \
+    f"""
+Popculture references:
++ The "in Ohio" suffix in the game's name is in context with the meme Only in Ohio.
++ Baba, mod-d 5, Mallo and Pols Agi is in context with the Indian meme Pols Agi.
+    """
 
 if len(sys.argv) > 1:
     if sys.argv[1].lower() == "true":

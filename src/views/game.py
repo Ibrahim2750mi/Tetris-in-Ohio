@@ -110,6 +110,7 @@ class Game(arcade.View):
                 self.light_layer.add(self.wall_bulb_right)
 
     def game_over(self, _delta_time):
+        arcade.stop_sound(self.bg_player)
         self.window.show_view(Aftermath(self.score, False, self.dies_irae_player))
 
     def setup(self, _delta_time=config.DEAD_ZONE):
@@ -348,6 +349,12 @@ class Game(arcade.View):
             self.add_box(delta_time)
             self.physics_engine.remove_sprite(self.player_sprite)
             self.funeral = True
+
+            if self.wall_bulb_left in self.light_layer:
+                arcade.play_sound(self.switch_off_sound)
+                self.light_layer.remove(self.wall_bulb_left)
+                self.light_layer.remove(self.wall_bulb_right)
+
             arcade.unschedule(self.start_timer)
             arcade.schedule_once(self.game_over, 5)
             arcade.stop_sound(self.bg_player)
