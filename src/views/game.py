@@ -99,16 +99,16 @@ class Game(arcade.View):
                 self.light_layer.add(self.player_light)
 
                 arcade.stop_sound(self.start_bg_player)
-                self.bg_player = arcade.play_sound(self.bg_music, looping=True)
+                self.bg_player = arcade.play_sound(self.bg_music, looping=True, volume=0.025)
 
             if int(self.total_game_time) % config.LIGHT_FLICKING_TIME_PERIOD != 0:
                 return
             if self.wall_bulb_left in self.light_layer:
-                arcade.play_sound(self.switch_off_sound)
+                arcade.play_sound(self.switch_off_sound, volume=0.2 )
                 self.light_layer.remove(self.wall_bulb_left)
                 self.light_layer.remove(self.wall_bulb_right)
             else:
-                arcade.play_sound(self.switch_on_sound)
+                arcade.play_sound(self.switch_on_sound, volume=0.2)
                 self.light_layer.add(self.wall_bulb_left)
                 self.light_layer.add(self.wall_bulb_right)
 
@@ -298,6 +298,9 @@ class Game(arcade.View):
                 # Set friction to zero for the player while moving
                 self.physics_engine.set_friction(self.player_sprite, 0)
                 self.player_sprite.jumping = True
+        else:
+            # Player's feet are not moving. Therefore up the friction so we stop.
+            self.physics_engine.set_friction(self.player_sprite, 1.0)
 
         # Process left/right
         if self.left_pressed and not self.right_pressed:
@@ -312,9 +315,9 @@ class Game(arcade.View):
             self.physics_engine.apply_force(self.player_sprite, force)
             # Set friction to zero for the player while moving
             self.physics_engine.set_friction(self.player_sprite, 0)
-
-        # Player's feet are not moving. Therefore up the friction so we stop.
-        self.physics_engine.set_friction(self.player_sprite, 1.0)
+        else:
+            # Player's feet are not moving. Therefore up the friction so we stop.
+            self.physics_engine.set_friction(self.player_sprite, 1.0)
 
     def on_key_press(self, key, modifiers):
         """Called whenever a key is pressed."""
@@ -327,7 +330,7 @@ class Game(arcade.View):
         elif key == arcade.key.RIGHT or key == arcade.key.D:
             self.right_pressed = True
         elif key == arcade.key.P:
-            self.player_sprite.pushing = not self.player_sprite.pushing
+            self.player_sprite.pulling = not self.player_sprite.pulling
         elif key == arcade.key.R:
             if self.reset_cooldown <= 0:
                 self.reset_cooldown += config.RESET_COOLDOWN
@@ -363,7 +366,7 @@ class Game(arcade.View):
             self.funeral = True
 
             if self.wall_bulb_left in self.light_layer:
-                arcade.play_sound(self.switch_off_sound)
+                arcade.play_sound(self.switch_off_sound, volume=0.2)
                 self.light_layer.remove(self.wall_bulb_left)
                 self.light_layer.remove(self.wall_bulb_right)
 
@@ -373,7 +376,7 @@ class Game(arcade.View):
             if self.bg_player:
                 player = self.bg_player
             arcade.stop_sound(player)
-            self.dies_irae_player = arcade.play_sound(self.dies_irae_sound, looping=True)
+            self.dies_irae_player = arcade.play_sound(self.dies_irae_sound, looping=True, volume=0.2)
 
         if self.funeral:
             self.add_box(delta_time)

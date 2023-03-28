@@ -21,7 +21,7 @@ class Aftermath(arcade.View):
         win_loose_message = "You win!\nCongrats for helping your friend Pols escape!!"
         if not self.win:
             arcade.set_background_color(arcade.color.EERIE_BLACK)
-            win_loose_message = "You lose\nPOLS IS NOW TRAPPED"
+            win_loose_message = "You lose\nPOLS IS NOW TRAPPED In the shadows"
 
         win_loose_text = arcade.gui.UILabel(text=win_loose_message, multiline=True, width=250, align="center")
 
@@ -34,7 +34,7 @@ class Aftermath(arcade.View):
             from views import Game
             if dies_irae_player:
                 arcade.stop_sound(dies_irae_player)
-            self.start_bg_player = arcade.play_sound(self.start_bg_music)
+            self.start_bg_player = arcade.play_sound(self.start_bg_music, volume=0.05)
             self.window.show_view(Game(self.start_bg_player))
 
         self.v_box.add(win_loose_text)

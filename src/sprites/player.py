@@ -27,6 +27,7 @@ class PlayerCharacter(arcade.Sprite):
         # Track our state
         self.jumping = False
         self.pushing = False
+        self.pulling = False
         self.can_push = False
         self.crushed = False
         self.health = Player.health
@@ -101,10 +102,11 @@ class PlayerCharacter(arcade.Sprite):
         """ Handle being moved by the pymunk engine """
 
         # Figure out if we need to face left or right
-        if dx < -config.DEAD_ZONE and self.character_face_direction == Player.right_facing:
-            self.character_face_direction = Player.left_facing
-        elif dx > config.DEAD_ZONE and self.character_face_direction == Player.left_facing:
-            self.character_face_direction = Player.right_facing
+        if not self.pulling:
+            if dx < -config.DEAD_ZONE and self.character_face_direction == Player.right_facing:
+                self.character_face_direction = Player.left_facing
+            elif dx > config.DEAD_ZONE and self.character_face_direction == Player.left_facing:
+                self.character_face_direction = Player.right_facing
 
         # Add to the odometer how far we've moved
         self.x_odometer += dx

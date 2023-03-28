@@ -65,7 +65,7 @@ class StartMenu(arcade.View):
 
     def on_show_view(self):
         self.manager.enable()
-        self.start_bg_player = arcade.play_sound(self.start_bg_music)
+        self.start_bg_player = arcade.play_sound(self.start_bg_music, volume=0.1)
 
     def on_hide_view(self):
         self.manager.disable()
