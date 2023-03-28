@@ -37,7 +37,7 @@ python src/main.py false true # performance run
 
 ## Fun
 
-Did you had fun playing it? I hope you did.
+Did you had fun playing it? I hope you did. The game contains meme reference hope you had a laugh.
 
 
 ## Bugs
